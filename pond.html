@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            .card {
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+                width: 20%;
+                border-radius: 5px;
+                overflow: hidden;
+            }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            img {
+                border-radius: 5px 5px 0 0;
+                width: 100%;
+            }
+
+            .container {
+                padding: 2px 16px;
+            }
+            
+        </style>
+    </head>
+<body>
+    <div id="duckContainer"></div>
+
+    <script>
+        async function getDucks() {
+            let host = "http://localhost:8081";
+            let response = await fetch(host + "/ducks");
+            let ducks = await response.json();
+            return ducks;
+        }
+
+        async function displayDuckCards() {
+            let duckContainer = document.getElementById("duckContainer");
+            duckContainer.innerHTML = "";
+
+            let ducks = await getDucks();
+
+            for(let duck of ducks) {
+                let card = document.createElement("div");
+                card.className = "card";
+
+                let img = document.createElement("img");
+                img.src = `http://localhost:8081/ducks/${duck.id}/image`;
+                img.alt = "Duck Image";
+
+                let container = document.createElement("div");
+                container.className = "container";
+
+                let h4 = document.createElement("h4");
+                h4.innerHTML = `<b>${duck.id}</b>`;
+
+                let p = document.createElement("p");
+                p.textContent = duck.type;
+
+                container.appendChild(h4);
+                container.appendChild(p);
+
+                card.appendChild(img);
+                card.appendChild(container);
+
+                duckContainer.appendChild(card);
+            };
+        }
+
+        // Initial render
+        displayDuckCards();
+    </script>
+</body>
+</html>
